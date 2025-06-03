@@ -106,4 +106,12 @@ export const sleepStatsService = {
   },
 };
 
+export const adviceService = {
+  getAdvice: async (userId: number): Promise<string> => {
+    const response = await api.post('/advice', { userId });
+    if (!response.data?.data?.advice) throw new Error("조언 생성 실패");
+    return response.data.data.advice;
+  }
+}
+
 export default api

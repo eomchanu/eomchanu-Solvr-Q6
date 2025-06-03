@@ -10,6 +10,5 @@ export const createRoutes = (context: AppContext) => async (fastify: FastifyInst
   fastify.register(createSleepRecordRoutes(context), { prefix: '/api/records' })
   fastify.register(createUserRoutes(context), { prefix: '/api/users' })
   fastify.register(createSleepStatsRoutes(context), { prefix: '/api/sleep-stats' })
-  fastify.register(createSleepStatsRoutes(context), { prefix: '/api/sleep-stats' })
   fastify.register(createAdviceRoutes(context), { prefix: '/api/advice' })
 }
