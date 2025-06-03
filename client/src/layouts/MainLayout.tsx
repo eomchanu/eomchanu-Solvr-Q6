@@ -24,7 +24,13 @@ const MainLayout = () => {
                 당근 딥슬립
               </Link>
             </div>
-            <nav className="flex space-x-4">
+            <nav className="flex space-x-4"> 
+              <Link
+                  to="/stats"
+                  className="text-neutral-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  통계 보기
+                </Link>
               {user && (
                 <button
                   className="text-neutral-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"

@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 import HomePage from './routes/HomePage'
 import SleepRecordListPage from './routes/SleepRecordListPage'
+import SleepStatsPage from './routes/SleepStatsPage';
 import NotFoundPage from './routes/NotFoundPage'
 import NicknamePage from './routes/NicknamePage'
 import NicknameGate from './components/NicknameGate'
@@ -20,6 +21,7 @@ function App() {
               <Route path="/" element={<MainLayout />}>
                 <Route index element={<HomePage />} />
                 <Route path="records" element={<SleepRecordListPage />} />
+                <Route path="stats" element={<SleepStatsPage />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
             </Routes>

@@ -1,6 +1,6 @@
 // 최근 30일 일별 수면시간
 export interface DailySleepStat {
-  sleepDate: string;      // YYYY-MM-DD
+  date: string;      // YYYY-MM-DD
   sleepTime: number;      // (단위: 시간, 소수점)
 }
 

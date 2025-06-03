@@ -88,10 +88,11 @@ export const sleepRecordService = {
 
 export const sleepStatsService = {
   // 최근 30일 일별 수면시간
-  getDailyStats: async (userId: number): Promise<DailySleepStat[]> => {
+  getRecentStats: async (userId: number): Promise<DailySleepStat[]> => {
     const response = await api.get<ApiResponse<DailySleepStat[]>>(
-      `/sleep-stats/daily/${userId}`
+      `/sleep-stats/recent/${userId}`
     );
+    
     return response.data.data || [];
   },
 
@@ -100,6 +101,7 @@ export const sleepStatsService = {
     const response = await api.get<ApiResponse<WeekdayAvgSleepStat[]>>(
       `/sleep-stats/weekday-avg/${userId}`
     );
+
     return response.data.data || [];
   },
 };
