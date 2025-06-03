@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { User, NewUserDto } from '../types/user'
 import { SleepRecord, NewSleepRecordDto, UpdateSleepRecordDto  } from '../types/sleep_record'
+import { DailySleepStat, WeekdayAvgSleepStat } from "../types/sleep_stats";
 
 // 공통 API 응답 타입
 interface ApiResponse<T = any> {
@@ -84,5 +85,23 @@ export const sleepRecordService = {
     await api.delete(`/records/${recordId}`)
   }
 }
+
+export const sleepStatsService = {
+  // 최근 30일 일별 수면시간
+  getDailyStats: async (userId: number): Promise<DailySleepStat[]> => {
+    const response = await api.get<ApiResponse<DailySleepStat[]>>(
+      `/sleep-stats/daily/${userId}`
+    );
+    return response.data.data || [];
+  },
+
+  // 요일별 평균 수면시간
+  getWeekdayAvgStats: async (userId: number): Promise<WeekdayAvgSleepStat[]> => {
+    const response = await api.get<ApiResponse<WeekdayAvgSleepStat[]>>(
+      `/sleep-stats/weekday-avg/${userId}`
+    );
+    return response.data.data || [];
+  },
+};
 
 export default api

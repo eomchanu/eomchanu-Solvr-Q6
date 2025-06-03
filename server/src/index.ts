@@ -3,8 +3,9 @@ import cors from '@fastify/cors'
 import env from './config/env'
 import { initializeDatabase, getDb } from './db'
 import runMigration from './db/migrate'
-import { createSleepRecordService } from './services/sleepRecordService'
 import { createUserService } from './services/userService'
+import { createSleepRecordService } from './services/sleepRecordService'
+import { createSleepStatsService } from './services/sleepStatsService'
 import { createRoutes } from './routes'
 import { AppContext } from './types/context'
 
@@ -40,7 +41,8 @@ async function start() {
     const db = await getDb()
     const context: AppContext = {
       sleepRecordService: createSleepRecordService({ db }),
-      userService: createUserService({ db })
+      userService: createUserService({ db }),
+      sleepStatsService: createSleepStatsService({ db })
     }
 
     // 라우트 등록
