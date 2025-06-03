@@ -1,7 +1,7 @@
-import { User, NewUser, UpdateUser } from '../db/schema'
+import { User, NewUser, SleepRecord, NewSleepRecord } from '../db/schema'
 
 // 사용자 관련 타입
-export { User, NewUser, UpdateUser }
+export { User, NewUser, SleepRecord, NewSleepRecord }
 
 // API 응답 타입
 export interface ApiResponse<T = any> {
@@ -19,23 +19,23 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
   totalPages: number
 }
 
-// 사용자 역할 타입
-export enum UserRole {
-  ADMIN = 'ADMIN',
-  USER = 'USER',
-  GUEST = 'GUEST'
-}
-
 // 사용자 생성 DTO
 export interface CreateUserDto {
-  name: string
-  email: string
-  role?: UserRole
+  nickname: string
 }
 
-// 사용자 수정 DTO
-export interface UpdateUserDto {
-  name?: string
-  email?: string
-  role?: UserRole
+// 수면 기록 생성 DTO
+export interface CreateSleepRecordDto {
+  userId: number
+  sleepDate: string      // YYYY-MM-DD
+  sleepStart: string     // YYYY-MM-DD HH:mm
+  wakeTime: string       // YYYY-MM-DD HH:mm
+  note?: string
+}
+
+// 수면 기록 수정 DTO
+export interface UpdateSleepRecordDto {
+  sleepStart?: string
+  wakeTime?: string
+  note?: string
 }

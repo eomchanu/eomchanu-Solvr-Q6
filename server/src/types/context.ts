@@ -1,5 +1,7 @@
-import { DeepSleepService } from '../services/sleepRecordService'
+import { SleepRecordService } from '../services/sleepRecordService'
+import { UserService } from '../services/userService'
 
 export type AppContext = {
-  deepSleepService: DeepSleepService
+  sleepRecordService: SleepRecordService
+  userService: UserService
 }

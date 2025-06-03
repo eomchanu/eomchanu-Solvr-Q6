@@ -8,13 +8,19 @@ import {
   UpdateSleepRecordDto
 } from '../types'
 
-type DeepSleepServiceDeps = { db: Database };
+type SleepRecordServiceDeps = { db: Database };
 
-export const createDeepSleepService = ({ db }: DeepSleepServiceDeps) => {
+export const createSleepRecordService = ({ db }: SleepRecordServiceDeps) => {
   // 유저별 전체 기록 조회
-  const getSleepRecordsByUserId = async (userId: number): Promise<SleepRecord[]> => {
+  const getSleepRecordList = async (userId: number): Promise<SleepRecord[]> => {
     return db.select().from(sleepRecords).where(eq(sleepRecords.userId, userId));
   };
+
+  // 단일 기록 조회 (id 기반)
+  const getSleepRecordById = async (id: number): Promise<SleepRecord | undefined> => {
+    const result = await db.select().from(sleepRecords).where(eq(sleepRecords.id, id)).limit(1)
+    return result[0]
+  }
 
   // 단일 기록 조회 (userId + sleepDate)
   const getSleepRecord = async (
@@ -56,13 +62,11 @@ export const createDeepSleepService = ({ db }: DeepSleepServiceDeps) => {
     return result[0]
   }
 
-  // 기록 수정
+  // 기록 수정 (id 기반)
   const updateSleepRecord = async (
-    userId: number,
-    sleepDate: string,
+    id: number,
     dto: UpdateSleepRecordDto
   ): Promise<SleepRecord | undefined> => {
-    // sleepTime 재계산 필요시
     let sleepTime: number | undefined = undefined
     if (dto.sleepStart && dto.wakeTime) {
       const start = new Date(dto.sleepStart)
@@ -81,30 +85,30 @@ export const createDeepSleepService = ({ db }: DeepSleepServiceDeps) => {
     const result = await db
       .update(sleepRecords)
       .set(updateFields)
-      .where(and(eq(sleepRecords.userId, userId), eq(sleepRecords.sleepDate, sleepDate)))
+      .where(eq(sleepRecords.id, id))
       .returning()
     return result[0]
   }
 
-  // 삭제
+  // 기록 삭제 (id 기반)
   const deleteSleepRecord = async (
-    userId: number,
-    sleepDate: string
+    id: number
   ): Promise<boolean> => {
     const result = await db
       .delete(sleepRecords)
-      .where(and(eq(sleepRecords.userId, userId), eq(sleepRecords.sleepDate, sleepDate)))
+      .where(eq(sleepRecords.id, id))
       .returning({ id: sleepRecords.id })
     return result.length > 0
   }
 
   return {
-    getSleepRecordsByUserId,
+    getSleepRecordList,
     getSleepRecord,
     createSleepRecord,
+    getSleepRecordById,
     updateSleepRecord,
     deleteSleepRecord,
   };
 };
 
-export type DeepSleepService = ReturnType<typeof createDeepSleepService>
+export type SleepRecordService = ReturnType<typeof createSleepRecordService>

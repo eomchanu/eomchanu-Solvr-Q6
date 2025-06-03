@@ -5,6 +5,6 @@ import { createSleepRecordRoutes } from './sleepRecordRoutes'
 
 // 모든 라우트 등록
 export const createRoutes = (context: AppContext) => async (fastify: FastifyInstance) => {
-  fastify.register(createUserRoutes(context), { prefix: '/api/record' })
-  fastify.register(createSleepRecordRoutes(context), { prefix: '/api/users' })
+  fastify.register(createSleepRecordRoutes(context), { prefix: '/api/records' })
+  fastify.register(createUserRoutes(context), { prefix: '/api/users' })
 }
