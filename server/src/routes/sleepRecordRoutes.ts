@@ -11,7 +11,7 @@ export function createSleepRecordRoutes(context: AppContext) {
     fastify.get('/list/:userId', controller.getSleepRecordList)
     fastify.get('/:userId/:sleepDate', controller.getSleepRecord)
     fastify.post('/', controller.createSleepRecord)
-    fastify.put('/:userId/:sleepDate', controller.updateSleepRecord)
-    fastify.delete('/:userId/:sleepDate', controller.deleteSleepRecord)
+    fastify.put('/:recordId', controller.updateSleepRecord)
+    fastify.delete('/:recordId', controller.deleteSleepRecord)
   }
 }

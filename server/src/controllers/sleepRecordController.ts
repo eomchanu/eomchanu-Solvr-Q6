@@ -92,20 +92,20 @@ const getSleepRecord = async (
 
   // 수면 기록 수정
   const updateSleepRecord = async (
-    request: FastifyRequest<{ Params: { id: string }; Body: UpdateSleepRecordDto }>,
+    request: FastifyRequest<{ Params: { recordId: string }; Body: UpdateSleepRecordDto }>,
     reply: FastifyReply
   ) => {
     try {
-      const id = parseInt(request.params.id, 10)
-      if (isNaN(id)) {
+      const recordId = parseInt(request.params.recordId, 10)
+      if (isNaN(recordId)) {
         return reply.code(400).send(createErrorResponse('유효하지 않은 기록 ID입니다.'))
       }
-      const record = await sleepRecordService.getSleepRecordById(id)
+      const record = await sleepRecordService.getSleepRecordById(recordId)
       if (!record) {
         return reply.code(404).send(createErrorResponse('수면 기록을 찾을 수 없습니다.'))
       }
       // (옵션) 날짜 중복 검사 등 추가 가능
-      const updated = await sleepRecordService.updateSleepRecord(id, request.body)
+      const updated = await sleepRecordService.updateSleepRecord(recordId, request.body)
       return reply.code(200).send(createSuccessResponse(updated, '수면 기록이 수정되었습니다.'))
     } catch (error) {
       request.log.error(error)
@@ -115,11 +115,13 @@ const getSleepRecord = async (
 
   // 수면 기록 삭제
   const deleteSleepRecord = async (
-    request: FastifyRequest<{ Params: { id: string } }>,
+    request: FastifyRequest<{ Params: { recordId: string } }>,
     reply: FastifyReply
   ) => {
+
+    console.log(request.params)
     try {
-      const id = parseInt(request.params.id, 10)
+      const id = parseInt(request.params.recordId, 10)
       if (isNaN(id)) {
         return reply.code(400).send(createErrorResponse('유효하지 않은 기록 ID입니다.'))
       }

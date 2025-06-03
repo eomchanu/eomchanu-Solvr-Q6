@@ -64,7 +64,7 @@ export const createSleepRecordService = ({ db }: SleepRecordServiceDeps) => {
 
   // 기록 수정 (id 기반)
   const updateSleepRecord = async (
-    id: number,
+    recordId: number,
     dto: UpdateSleepRecordDto
   ): Promise<SleepRecord | undefined> => {
     let sleepTime: number | undefined = undefined
@@ -85,7 +85,7 @@ export const createSleepRecordService = ({ db }: SleepRecordServiceDeps) => {
     const result = await db
       .update(sleepRecords)
       .set(updateFields)
-      .where(eq(sleepRecords.id, id))
+      .where(eq(sleepRecords.id, recordId))
       .returning()
     return result[0]
   }

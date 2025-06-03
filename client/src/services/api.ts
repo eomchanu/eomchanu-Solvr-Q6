@@ -54,34 +54,34 @@ export const userService = {
 export const sleepRecordService = {
   // 유저별 기록 전체 리스트
   getListByUserId: async (userId: number): Promise<SleepRecord[]> => {
-    const res = await api.get<ApiResponse<SleepRecord[]>>(`/sleep-records/list/${userId}`)
+    const res = await api.get<ApiResponse<SleepRecord[]>>(`/records/list/${userId}`)
     return res.data.data || []
   },
 
   // 특정 날짜 단일 기록 조회
   getRecord: async (userId: number, sleepDate: string): Promise<SleepRecord> => {
-    const res = await api.get<ApiResponse<SleepRecord>>(`/sleep-records/${userId}/${sleepDate}`)
+    const res = await api.get<ApiResponse<SleepRecord>>(`/records/${userId}/${sleepDate}`)
     if (!res.data.data) throw new Error('기록을 찾을 수 없습니다.')
     return res.data.data
   },
 
   // 기록 생성
   create: async (recordData: NewSleepRecordDto): Promise<SleepRecord> => {
-    const res = await api.post<ApiResponse<SleepRecord>>('/sleep-records', recordData)
+    const res = await api.post<ApiResponse<SleepRecord>>('/records', recordData)
     if (!res.data.data) throw new Error('기록 생성에 실패했습니다.')
     return res.data.data
   },
 
   // 기록 수정
-  update: async (userId: number, sleepDate: string, updateData: UpdateSleepRecordDto): Promise<SleepRecord> => {
-    const res = await api.put<ApiResponse<SleepRecord>>(`/sleep-records/${userId}/${sleepDate}`, updateData)
+  update: async (recordId: number, updateData: UpdateSleepRecordDto): Promise<SleepRecord> => {
+    const res = await api.put<ApiResponse<SleepRecord>>(`/records/${recordId}`, updateData)
     if (!res.data.data) throw new Error('기록 수정에 실패했습니다.')
     return res.data.data
   },
 
   // 기록 삭제
-  delete: async (userId: number, sleepDate: string): Promise<void> => {
-    await api.delete(`/sleep-records/${userId}/${sleepDate}`)
+  delete: async (recordId: number): Promise<void> => {
+    await api.delete(`/records/${recordId}`)
   }
 }
 

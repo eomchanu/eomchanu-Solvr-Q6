@@ -1,49 +1,120 @@
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { sleepRecordService } from "../services/api";
+import { useUser } from "../UserContext";
 
-const HomePage = () => {
-  return (
-    <div className="text-center">
-      <h1 className="text-4xl font-bold text-neutral-900 mb-6">풀스택 보일러플레이트</h1>
-      <p className="text-xl text-neutral-600 mb-8">
-        React, Vite, TailwindCSS, Fastify, SQLite를 활용한 풀스택 웹 애플리케이션
-        보일러플레이트입니다.
-      </p>
-      <div className="flex justify-center space-x-4">
-        <Link to="/users" className="btn btn-primary">
-          유저 관리 시작하기
-        </Link>
-        <a
-          href="https://github.com/yourusername/fullstack-boilerplate"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn btn-secondary"
-        >
-          GitHub 저장소
-        </a>
-      </div>
-
-      <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="card">
-          <h2 className="text-xl font-semibold mb-4">React + Vite</h2>
-          <p className="text-neutral-600">
-            빠른 개발 경험을 제공하는 React와 Vite를 사용하여 모던 UI를 구축합니다.
-          </p>
-        </div>
-        <div className="card">
-          <h2 className="text-xl font-semibold mb-4">TailwindCSS</h2>
-          <p className="text-neutral-600">
-            유틸리티 우선 CSS 프레임워크로 빠르고 유연한 디자인을 구현합니다.
-          </p>
-        </div>
-        <div className="card">
-          <h2 className="text-xl font-semibold mb-4">Fastify + SQLite</h2>
-          <p className="text-neutral-600">
-            빠른 백엔드 API와 간편한 데이터베이스 관리를 제공합니다.
-          </p>
-        </div>
-      </div>
-    </div>
-  )
+function toFullDateTime(date: string, time: string) {
+  return `${date}T${time}`;
 }
 
-export default HomePage
+const HomePage = () => {
+  const { user } = useUser();
+  const navigate = useNavigate();
+
+  // 오늘 날짜 (YYYY-MM-DD)
+  const today = new Date().toISOString().slice(0, 10);
+
+  // form state
+  const [sleepDate, setSleepDate] = useState(today);
+  const [sleepStart, setSleepStart] = useState(""); // HH:mm
+  const [wakeTime, setWakeTime] = useState("");     // HH:mm
+  const [note, setNote] = useState("");
+  const [message, setMessage] = useState<string | null>(null);
+
+  // 로그인 안 됐으면 닉네임 입력 화면으로
+  useEffect(() => {
+    if (!user) {
+      navigate("/nickname", { replace: true });
+    }
+  }, [user, navigate]);
+
+  // user가 없으면 렌더 X (잠깐 빈 화면)
+  if (!user) return null;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMessage(null);
+
+    if (!sleepStart || !wakeTime) {
+      setMessage("수면 시작/기상 시간을 모두 입력하세요.");
+      return;
+    }
+
+    const sleepStartFull = toFullDateTime(sleepDate, sleepStart);
+    const wakeTimeFull = toFullDateTime(sleepDate, wakeTime);
+
+    try {
+      await sleepRecordService.create({
+        userId: user.id,
+        sleepDate, // YYYY-MM-DD
+        sleepStart: sleepStartFull, // YYYY-MM-DDTHH:mm
+        wakeTime: wakeTimeFull,     // YYYY-MM-DDTHH:mm
+        note,
+      });
+      setMessage("수면 기록이 등록되었습니다.");
+      setNote("");
+      // setSleepStart(""); setWakeTime(""); 등 필요 시 추가
+    } catch (err: any) {
+      setMessage(err.message || "기록 등록 실패");
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50">
+      <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center w-full max-w-md">
+        <h1 className="text-2xl font-bold mb-2 text-primary-500">당근 딥슬립</h1>
+        <div className="mb-4 text-gray-500">{user.nickname}님, 오늘의 수면을 기록하세요.</div>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
+          <input
+            type="date"
+            className="border p-2 rounded"
+            value={sleepDate}
+            onChange={e => setSleepDate(e.target.value)}
+            max={today}
+            required
+          />
+          <div className="flex gap-2">
+            <input
+              type="time"
+              className="border p-2 rounded w-1/2"
+              value={sleepStart}
+              onChange={e => setSleepStart(e.target.value)}
+              required
+            />
+            <input
+              type="time"
+              className="border p-2 rounded w-1/2"
+              value={wakeTime}
+              onChange={e => setWakeTime(e.target.value)}
+              required
+            />
+          </div>
+          <textarea
+            className="border p-2 rounded"
+            value={note}
+            onChange={e => setNote(e.target.value)}
+            placeholder="특이사항 (선택)"
+            rows={2}
+          />
+          <button
+            type="submit"
+            className="bg-primary-500 text-white font-bold py-2 rounded hover:bg-primary-600"
+          >
+            기록 저장
+          </button>
+        </form>
+        {message && (
+          <div className="mt-4 text-center text-sm text-primary-700">{message}</div>
+        )}
+        <button
+          className="mt-8 text-primary-500 underline"
+          onClick={() => navigate("/records")}
+        >
+          내 기록 보기
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default HomePage;
