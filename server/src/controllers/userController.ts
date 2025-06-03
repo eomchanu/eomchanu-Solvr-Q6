@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { createSuccessResponse, createErrorResponse } from '../utils/response'
 import { CreateUserDto, UpdateUserDto } from '../types'
-import { UserService } from '../services/userService'
+import { UserService } from '../services/deepSleepService'
 
 type UserControllerDeps = {
   userService: UserService
