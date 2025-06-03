@@ -15,6 +15,7 @@ interface Env {
   NODE_ENV: 'development' | 'production' | 'test'
   DATABASE_URL: string
   CORS_ORIGIN: string
+  GEMINI_API_KEY: string
   LOG_LEVEL: string
 }
 
@@ -25,6 +26,7 @@ const env: Env = {
   NODE_ENV: (process.env.NODE_ENV as Env['NODE_ENV']) || 'development',
   DATABASE_URL: process.env.DATABASE_URL || './data/database.sqlite',
   CORS_ORIGIN: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY || "AIzaSyAWIhu-6QZ0sJ9osjabZbZHo0t5y6pK5Zs",
   LOG_LEVEL: process.env.LOG_LEVEL || 'info'
 }
 
