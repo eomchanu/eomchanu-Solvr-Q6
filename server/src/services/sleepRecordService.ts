@@ -12,12 +12,12 @@ type DeepSleepServiceDeps = { db: Database };
 
 export const createDeepSleepService = ({ db }: DeepSleepServiceDeps) => {
   // 유저별 전체 기록 조회
-  const getRecordsByUserId = async (userId: number): Promise<SleepRecord[]> => {
+  const getSleepRecordsByUserId = async (userId: number): Promise<SleepRecord[]> => {
     return db.select().from(sleepRecords).where(eq(sleepRecords.userId, userId));
   };
 
   // 단일 기록 조회 (userId + sleepDate)
-  const getRecord = async (
+  const getSleepRecord = async (
     userId: number,
     sleepDate: string
   ): Promise<SleepRecord | undefined> => {
@@ -30,11 +30,11 @@ export const createDeepSleepService = ({ db }: DeepSleepServiceDeps) => {
   }
 
   // 기록 생성 (동일 날짜 중복 불가)
-  const createRecord = async (
+  const createSleepRecord = async (
     dto: CreateSleepRecordDto
   ): Promise<SleepRecord> => {
     // 중복 체크 (userId+date)
-    const exists = await getRecord(dto.userId, dto.sleepDate)
+    const exists = await getSleepRecord(dto.userId, dto.sleepDate)
     if (exists) {
       throw new Error('이미 해당 날짜에 기록이 존재합니다.')
     }
@@ -57,7 +57,7 @@ export const createDeepSleepService = ({ db }: DeepSleepServiceDeps) => {
   }
 
   // 기록 수정
-  const updateRecord = async (
+  const updateSleepRecord = async (
     userId: number,
     sleepDate: string,
     dto: UpdateSleepRecordDto
@@ -87,7 +87,7 @@ export const createDeepSleepService = ({ db }: DeepSleepServiceDeps) => {
   }
 
   // 삭제
-  const deleteRecord = async (
+  const deleteSleepRecord = async (
     userId: number,
     sleepDate: string
   ): Promise<boolean> => {
@@ -99,10 +99,12 @@ export const createDeepSleepService = ({ db }: DeepSleepServiceDeps) => {
   }
 
   return {
-    getRecordsByUserId,
-    getRecord,
-    createRecord,
-    updateRecord,
-    deleteRecord,
+    getSleepRecordsByUserId,
+    getSleepRecord,
+    createSleepRecord,
+    updateSleepRecord,
+    deleteSleepRecord,
   };
 };
+
+export type DeepSleepService = ReturnType<typeof createDeepSleepService>
